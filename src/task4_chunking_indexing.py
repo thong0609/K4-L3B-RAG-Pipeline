@@ -62,84 +62,82 @@ GEMINI_EMBED_PER_MINUTE = int(os.getenv("GEMINI_EMBED_PER_MINUTE", "100"))
 COLLECTION_NAME = "rag_documents"
 
 
-import os
-from pathlib import Path
-from typing import Any
+# ---------------------------------------------------------------- embedding
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-STANDARDIZED_DIR = Path(__file__).parent.parent / "data" / "standardized"
-CHROMA_DIR = Path(__file__).parent.parent / "chroma_db"
-
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 50
-CHUNKING_METHOD = "recursive"
-
-EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "gemini").lower()
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "models/gemini-embedding-001")
-COLLECTION_NAME = "rag_documents"
+def _normalize(vectors: list[list[float]]) -> list[list[float]]:
+    normalized = []
+    for vector in vectors:
+        norm = sum(value * value for value in vector) ** 0.5 or 1.0
+        normalized.append([value / norm for value in vector])
+    return normalized
 
 
-def embed_texts(texts: list[str]) -> list[list[float]]:
-    """Tạo vector embeddings theo provider cấu hình trong .env."""
-    if not texts:
-        return []
+def _with_retry(call, retries: int = 6):
+    """Retry khi bị rate limit / lỗi mạng tạm thời; ưu tiên thời gian chờ server gợi ý."""
+    for attempt in range(retries):
+        try:
+            return call()
+        except Exception as error:
+            message = str(error).lower()
+            transient = any(s in message for s in ("429", "rate", "quota", "503", "timeout", "unavailable"))
+            if not transient or attempt == retries - 1:
+                raise
+            suggested = re.search(r"retry in ([\d.]+)s", message)
+            delay = float(suggested.group(1)) + 2 if suggested else min(60, 5 * 2 ** attempt)
+            print(f"  rate limited, retrying in {delay:.0f}s ({attempt + 1}/{retries - 1})")
+            time.sleep(delay)
 
-    provider = EMBEDDING_PROVIDER.strip()
-    gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
 
-    # Nếu chọn gemini hoặc sentence_transformers chưa cài đặt nhưng có Gemini key
-    if provider == "gemini" or (gemini_key and provider == "sentence_transformers"):
-        from google import genai
+def _embed_gemini(texts: list[str], is_query: bool) -> list[list[float]]:
+    from google import genai
+    from google.genai import types
 
-        import time
-
-        client = genai.Client(api_key=gemini_key)
-        all_embeddings: list[list[float]] = []
-        batch_size = 50
-        for i in range(0, len(texts), batch_size):
-            batch = texts[i : i + batch_size]
-            for attempt in range(5):
-                try:
-                    resp = client.models.embed_content(
-                        model="models/gemini-embedding-001",
-                        contents=batch,
-                    )
-                    for emb in resp.embeddings:
-                        all_embeddings.append(list(emb.values))
-                    time.sleep(1.0)
-                    break
-                except Exception as exc:
-                    err_text = str(exc)
-                    if "429" in err_text or "RESOURCE_EXHAUSTED" in err_text:
-                        print(f"[Gemini Embed] Rate limit 429, waiting 42s (attempt {attempt+1}/5)...")
-                        time.sleep(42)
-                    else:
-                        raise
-        return all_embeddings
-
-    if provider == "openai":
-        from openai import OpenAI
-
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
-        resp = client.embeddings.create(
-            model=EMBEDDING_MODEL or "text-embedding-3-small",
-            input=texts,
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    config = types.EmbedContentConfig(
+        task_type="RETRIEVAL_QUERY" if is_query else "RETRIEVAL_DOCUMENT",
+        output_dimensionality=EMBEDDING_DIM,
+    )
+    batch_size = min(EMBED_BATCH_SIZE, GEMINI_EMBED_PER_MINUTE)
+    vectors = []
+    for start in range(0, len(texts), batch_size):
+        batch = texts[start:start + batch_size]
+        started = time.monotonic()
+        response = _with_retry(
+            lambda: client.models.embed_content(model=EMBEDDING_MODEL, contents=batch, config=config)
         )
-        return [item.embedding for item in resp.data]
+        vectors.extend(embedding.values for embedding in response.embeddings)
+        if start + batch_size < len(texts):
+            # Giãn cách batch để không vượt quota/phút.
+            wait = 60 * len(batch) / GEMINI_EMBED_PER_MINUTE - (time.monotonic() - started)
+            print(f"  embedded {len(vectors)}/{len(texts)}, waiting {max(wait, 0):.0f}s for quota")
+            time.sleep(max(wait, 0))
+    return vectors
 
-    # Mặc định thử sentence_transformers nếu được cài
-    try:
-        from sentence_transformers import SentenceTransformer
 
-        model = SentenceTransformer(EMBEDDING_MODEL)
-        return model.encode(texts).tolist()
-    except Exception as exc:
-        raise RuntimeError(
-            f"Không thể embed bằng provider '{provider}'. Hãy đặt GEMINI_API_KEY trong .env để dùng Gemini embeddings: {exc}"
+def _embed_openai(texts: list[str], is_query: bool) -> list[list[float]]:
+    from openai import OpenAI
+
+    client = OpenAI()
+    vectors = []
+    for start in range(0, len(texts), EMBED_BATCH_SIZE):
+        batch = texts[start:start + EMBED_BATCH_SIZE]
+        response = _with_retry(
+            lambda: client.embeddings.create(model=EMBEDDING_MODEL, input=batch, dimensions=EMBEDDING_DIM)
         )
+        vectors.extend(item.embedding for item in response.data)
+    return vectors
+
+
+_st_model = None
+
+
+def _embed_sentence_transformers(texts: list[str], is_query: bool) -> list[list[float]]:
+    global _st_model
+    from sentence_transformers import SentenceTransformer
+
+    if _st_model is None:
+        _st_model = SentenceTransformer(EMBEDDING_MODEL)
+    return _st_model.encode(texts, batch_size=16).tolist()
 
 
 _PROVIDERS = {

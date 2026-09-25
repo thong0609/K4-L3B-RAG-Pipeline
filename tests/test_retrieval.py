@@ -68,7 +68,8 @@ def test_dense_preserves_raw_cosine_and_caps_query_size(monkeypatch):
                 "distances": [[1.25, 0.1]],
             }
 
-    def embed(texts):
+    def embed(texts, is_query=False):
+        assert is_query is True
         assert texts == ["học phí"]
         return [[1.0, 0.0]]
 
@@ -95,7 +96,7 @@ def test_dense_deduplicates_and_limits_results(monkeypatch):
             }
 
     monkeypatch.setattr(dense, "get_collection", Collection)
-    monkeypatch.setattr(dense, "embed_texts", lambda texts: [[1.0]])
+    monkeypatch.setattr(dense, "embed_texts", lambda texts, is_query=False: [[1.0]])
     output = dense.semantic_search("test", top_k=1)
     assert len(output) == 1
     assert output[0]["id"] == "a"
@@ -182,7 +183,7 @@ def test_shared_collection_flows_through_dense_bm25_and_rrf(monkeypatch):
             }
 
     monkeypatch.setattr(dense, "get_collection", Collection)
-    monkeypatch.setattr(dense, "embed_texts", lambda texts: [[1.0]])
+    monkeypatch.setattr(dense, "embed_texts", lambda texts, is_query=False: [[1.0]])
     monkeypatch.setattr(lexical, "get_collection", Collection)
     monkeypatch.setattr(lexical, "CORPUS", None)
     dense_results = dense.semantic_search("tuition")

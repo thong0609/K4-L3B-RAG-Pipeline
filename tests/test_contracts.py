@@ -129,7 +129,7 @@ def test_semantic_search_uses_shared_embedding_and_contract(monkeypatch):
                 "distances": [[0.1, 0.4]],
             }
 
-    monkeypatch.setattr(semantic, "embed_texts", lambda texts: [[0.1, 0.2]])
+    monkeypatch.setattr(semantic, "embed_texts", lambda texts, is_query=False: [[0.1, 0.2]])
     monkeypatch.setattr(semantic, "get_collection", lambda: FakeCollection())
     output = semantic.semantic_search("tuition", top_k=2)
     validate_search_results(output, top_k=2, expected_method="dense")

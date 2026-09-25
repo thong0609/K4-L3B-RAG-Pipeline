@@ -23,7 +23,7 @@ def semantic_search(query: str, top_k: int = 10) -> list[dict]:
     if count == 0:
         return []
 
-    query_vector = embed_texts([query])[0]
+    query_vector = embed_texts([query], is_query=True)[0]
     response = collection.query(
         query_embeddings=[query_vector],
         n_results=min(top_k, count),
