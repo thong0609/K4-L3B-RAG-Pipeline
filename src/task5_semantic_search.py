@@ -39,11 +39,13 @@ def semantic_search(query: str, top_k: int = 10) -> list[dict]:
         score = 1.0 - float(distance)
         if item_id in results and results[item_id]["score"] >= score:
             continue
+        meta = dict(metadata)
+        meta.setdefault("url", None)
         results[item_id] = {
             "id": item_id,
             "content": content,
             "score": score,
-            "metadata": metadata,
+            "metadata": meta,
             "retrieval_method": "dense",
         }
     return sorted(results.values(), key=lambda item: item["score"], reverse=True)[:top_k]
