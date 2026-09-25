@@ -1,29 +1,63 @@
 """
 Task 4 — Chunking, embedding và indexing.
 
-Hướng dẫn:
-    1. Đọc toàn bộ Markdown trong data/standardized/.
-    2. Chia văn bản bằng strategy đã chọn.
-    3. Embed chunks bằng một provider duy nhất.
-    4. Upsert vào ChromaDB với cosine distance.
+1. Đọc Markdown trong data/standardized/ (YAML front matter do Task 3 ghi).
+2. Chunk bằng RecursiveCharacterTextSplitter, ưu tiên cắt ở ranh giới
+   Chương/Điều (văn bản pháp quy) và heading Markdown (bài báo).
+3. Embed bằng một provider duy nhất theo EMBEDDING_PROVIDER trong .env.
+4. Upsert vào ChromaDB (cosine). ID ổn định -> chạy lại không tạo dữ liệu trùng;
+   chunk không còn trong corpus bị xoá khỏi collection.
 
-Mỗi document/chunk phải theo docs/MODULE_CONTRACTS.md. ID cần ổn định để
-chạy lại pipeline không tạo dữ liệu trùng. Task 5 phải dùng chung embed_texts().
+Task 5 phải dùng chung embed_texts(); với query gọi embed_texts([query], is_query=True).
 """
 
+import json
+import os
+import re
+import time
 from pathlib import Path
 
+from dotenv import load_dotenv
 
-STANDARDIZED_DIR = Path(__file__).parent.parent / "data" / "standardized"
-CHROMA_DIR = Path(__file__).parent.parent / "chroma_db"
 
-# Giải thích lựa chọn tham số trong báo cáo nhóm.
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 50
+ROOT = Path(__file__).parent.parent
+STANDARDIZED_DIR = ROOT / "data" / "standardized"
+CHROMA_DIR = ROOT / "chroma_db"
+
+load_dotenv(ROOT / ".env")
+
+# Tiếng Việt ~4-5 ký tự/token -> 1000 ký tự ≈ 200-250 token: đủ chứa trọn một
+# khoản trong quy chế hoặc một đoạn bảng điểm chuẩn, vẫn đủ nhỏ để retrieval chính xác.
+# Overlap 150 ký tự giữ ngữ cảnh khi một điều khoản bị cắt ngang.
+# CHUNK_SIZE là độ dài tối đa của cả chunk, tính cả header ngữ cảnh.
+CHUNK_SIZE = 1000
+CHUNK_OVERLAP = 150
 CHUNKING_METHOD = "recursive"
+# Phần "[tiêu đề › mục]" gắn đầu chunk được giới hạn trong ngân sách này,
+# nên tổng độ dài chunk (header + text) không vượt CHUNK_SIZE.
+HEADER_BUDGET = 200
+SEPARATORS = [
+    "\nChương ", "\nĐiều ",            # cấu trúc văn bản quy phạm
+    "\n## ", "\n### ", "\n#### ",      # heading Markdown của bài báo
+    "\n\n", "\n", ". ", " ", "",
+]
+# Dòng được coi là "tiêu đề mục" để gắn ngữ cảnh cho chunk.
+SECTION_PATTERN = re.compile(
+    r"^(#{1,4} .+|Chương [IVXLC\d]+.*|Điều \d+\..*|[IVX]+\. .+)$", re.MULTILINE
+)
 
-EMBEDDING_MODEL = "BAAI/bge-m3"
-EMBEDDING_DIM = 1024
+EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "gemini").strip().lower()
+_DEFAULT_MODELS = {
+    "gemini": "gemini-embedding-001",
+    "openai": "text-embedding-3-small",
+    "sentence_transformers": "BAAI/bge-m3",
+}
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL") or _DEFAULT_MODELS.get(EMBEDDING_PROVIDER, "")
+# Gemini/OpenAI cho phép chọn số chiều; bge-m3 cố định 1024.
+EMBEDDING_DIM = 1024 if EMBEDDING_PROVIDER == "sentence_transformers" else 768
+EMBED_BATCH_SIZE = 100
+# Free tier Gemini tính mỗi text trong batch là 1 request: 100 request/phút/model.
+GEMINI_EMBED_PER_MINUTE = int(os.getenv("GEMINI_EMBED_PER_MINUTE", "100"))
 
 COLLECTION_NAME = "rag_documents"
 
@@ -107,6 +141,27 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
             f"Không thể embed bằng provider '{provider}'. Hãy đặt GEMINI_API_KEY trong .env để dùng Gemini embeddings: {exc}"
         )
 
+
+_PROVIDERS = {
+    "gemini": _embed_gemini,
+    "openai": _embed_openai,
+    "sentence_transformers": _embed_sentence_transformers,
+}
+
+
+def embed_texts(texts: list[str], is_query: bool = False) -> list[list[float]]:
+    """Embed danh sách text (đã L2-normalize). is_query=True khi embed câu hỏi."""
+    if not texts:
+        return []
+    if EMBEDDING_PROVIDER not in _PROVIDERS:
+        raise ValueError(f"Unsupported EMBEDDING_PROVIDER={EMBEDDING_PROVIDER!r}")
+    vectors = _PROVIDERS[EMBEDDING_PROVIDER](texts, is_query)
+    if len(vectors) != len(texts):
+        raise RuntimeError(f"Embedding count mismatch: {len(vectors)} != {len(texts)}")
+    return _normalize(vectors)
+
+
+# ---------------------------------------------------------------- vector store
 
 def get_collection():
     """Mở Chroma collection dùng cosine distance."""
