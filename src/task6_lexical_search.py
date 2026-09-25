@@ -27,12 +27,14 @@ def tokenize(text: str) -> list[str]:
 def load_indexed_corpus() -> list[dict]:
     """Đọc đúng ID, nội dung và nguồn mà dense search đang sử dụng."""
     response = get_collection().get(include=["documents", "metadatas"])
-    return [
-        {"id": item_id, "content": content, "metadata": metadata}
-        for item_id, content, metadata in zip(
-            response["ids"], response["documents"], response["metadatas"]
-        )
-    ]
+    items = []
+    for item_id, content, metadata in zip(
+        response["ids"], response["documents"], response["metadatas"]
+    ):
+        meta = dict(metadata)
+        meta.setdefault("url", None)
+        items.append({"id": item_id, "content": content, "metadata": meta})
+    return items
 
 
 @lru_cache(maxsize=1)

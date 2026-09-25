@@ -1,0 +1,107 @@
+[
+  {
+    "question": "Trường Đại học Giáo dục có địa chỉ trụ sở ở đâu?",
+    "answer": "Trường có 3 địa chỉ trụ sở: Nhà G7 (144 Xuân Thuỷ, Cầu Giấy), Nhà C0 (182 Lương Thế Vinh, Thanh Xuân) và Cơ sở ĐHQGHN tại Hoà Lạc.",
+    "context": "3. Địa chỉ các trụ sở:\n- Nhà G7, Số 144 Xuân Thuỷ, Cầu Giấy, Hà Nội.\n- Nhà C0, Số 182 Lương Thế Vinh, Thanh Xuân, Hà Nội.\n- Cơ sở Đại học Quốc gia Hà Nội tại Hoà Lạc.",
+    "expected_answer": "Trường có 3 địa chỉ trụ sở: Nhà G7 (144 Xuân Thuỷ, Cầu Giấy), Nhà C0 (182 Lương Thế Vinh, Thanh Xuân) và Cơ sở ĐHQGHN tại Hoà Lạc.",
+    "expected_context": "3. Địa chỉ các trụ sở:\n- Nhà G7, Số 144 Xuân Thuỷ, Cầu Giấy, Hà Nội.\n- Nhà C0, Số 182 Lương Thế Vinh, Thanh Xuân, Hà Nội.\n- Cơ sở Đại học Quốc gia Hà Nội tại Hoà Lạc."
+  },
+  {
+    "question": "Sinh viên năm nhất của Trường Đại học Giáo dục sẽ học tập ở cơ sở nào?",
+    "answer": "Tất cả sinh viên năm nhất trúng tuyển năm học 2026-2027 sẽ học tập tại cơ sở Hoà Lạc.",
+    "context": "Địa điểm học tập của sinh viên: Tất cả sinh viên năm nhất ở tất cả các ngành, nhóm ngành trúng tuyển năm học 2026-2027 học tập tại cơ sở Hoà Lạc.",
+    "expected_answer": "Tất cả sinh viên năm nhất trúng tuyển năm học 2026-2027 sẽ học tập tại cơ sở Hoà Lạc.",
+    "expected_context": "Địa điểm học tập của sinh viên: Tất cả sinh viên năm nhất ở tất cả các ngành, nhóm ngành trúng tuyển năm học 2026-2027 học tập tại cơ sở Hoà Lạc."
+  },
+  {
+    "question": "Số điện thoại đường dây nóng (hotline) tuyển sinh của Trường Đại học Giáo dục là số mấy?",
+    "answer": "Hotline tuyển sinh là 0865964905 và (024) 73017123 (máy lẻ: 1103 và 1104).",
+    "context": "- Hotline: 0865964905; (024) 73017123 (máy lẻ: 1103 và 1104);",
+    "expected_answer": "Hotline tuyển sinh là 0865964905 và (024) 73017123 (máy lẻ: 1103 và 1104).",
+    "expected_context": "- Hotline: 0865964905; (024) 73017123 (máy lẻ: 1103 và 1104);"
+  },
+  {
+    "question": "Năm 2026, Trường Đại học Giáo dục tuyển sinh bao nhiêu ngành đào tạo đại học chính quy?",
+    "answer": "Trường tuyển sinh 16 ngành, bao gồm 10 ngành đào tạo giáo viên và 6 ngành ngoài sư phạm.",
+    "context": "Năm 2026, Trường Đại học Giáo dục sẽ tuyển sinh 16 ngành đào tạo đại học chính quy, bao gồm: 10 ngành đào tạo giáo viên, 06 ngành thuộc các nhóm ngành ngoài sư phạm",
+    "expected_answer": "Trường tuyển sinh 16 ngành, bao gồm 10 ngành đào tạo giáo viên và 6 ngành ngoài sư phạm.",
+    "expected_context": "Năm 2026, Trường Đại học Giáo dục sẽ tuyển sinh 16 ngành đào tạo đại học chính quy, bao gồm: 10 ngành đào tạo giáo viên, 06 ngành thuộc các nhóm ngành ngoài sư phạm"
+  },
+  {
+    "question": "Phương thức xét tuyển mã 401 của Trường Đại học Giáo dục là gì?",
+    "answer": "Phương thức 401 là Xét tuyển dựa trên kết quả thi đánh giá năng lực (HSA) còn hiệu lực của ĐHQGHN.",
+    "context": "(3) Phương thức 3 (mã phương thức: 401): Xét tuyển kết quả thi đánh giá năng lực (HSA) còn hiệu lực của ĐHQGHN;",
+    "expected_answer": "Phương thức 401 là Xét tuyển dựa trên kết quả thi đánh giá năng lực (HSA) còn hiệu lực của ĐHQGHN.",
+    "expected_context": "(3) Phương thức 3 (mã phương thức: 401): Xét tuyển kết quả thi đánh giá năng lực (HSA) còn hiệu lực của ĐHQGHN;"
+  },
+  {
+    "question": "Thí sinh đăng ký xét tuyển vào các chương trình đào tạo giáo viên được xếp nguyện vọng ở vị trí nào?",
+    "answer": "Thí sinh chỉ được xét tuyển nếu đăng ký ở các nguyện vọng xét tuyển có thứ tự từ 01 đến 05.",
+    "context": "Thí sinh được đăng ký tối đa 15 nguyện vọng xét tuyển (NVXT); các CTĐT giáo viên chỉ xét tuyển thí sinh đăng ký ở các NVXT có thứ tự từ 01 đến 05.",
+    "expected_answer": "Thí sinh chỉ được xét tuyển nếu đăng ký ở các nguyện vọng xét tuyển có thứ tự từ 01 đến 05.",
+    "expected_context": "Thí sinh được đăng ký tối đa 15 nguyện vọng xét tuyển (NVXT); các CTĐT giáo viên chỉ xét tuyển thí sinh đăng ký ở các NVXT có thứ tự từ 01 đến 05."
+  },
+  {
+    "question": "Sinh viên nhóm ngành ngoài sư phạm của Trường ĐHGD sẽ được phân ngành vào khi nào?",
+    "answer": "Sinh viên sẽ được phân ngành sau khi kết thúc 2 học kỳ chính của năm thứ nhất.",
+    "context": "Đối với sinh viên tham gia nhóm ngành ngoài sư phạm, Trường Đại học Giáo dục sẽ tiến hành phân ngành sau khi sinh viên kết thúc 2 học kỳ chính của năm thứ nhất.",
+    "expected_answer": "Sinh viên sẽ được phân ngành sau khi kết thúc 2 học kỳ chính của năm thứ nhất.",
+    "expected_context": "Đối với sinh viên tham gia nhóm ngành ngoài sư phạm, Trường Đại học Giáo dục sẽ tiến hành phân ngành sau khi sinh viên kết thúc 2 học kỳ chính của năm thứ nhất."
+  },
+  {
+    "question": "Điều kiện về kết quả rèn luyện để nộp hồ sơ xét tuyển dự bị đại học (Phương thức 500) là gì?",
+    "answer": "Kết quả rèn luyện năm học dự bị đại học phải xếp loại Tốt trở lên.",
+    "context": "Điều kiện nộp hồ sơ (đáp ứng đủ 3 tiêu chí):\n...\n- Kết quả rèn luyện năm học dự bị đại học xếp loại Tốt trở lên.",
+    "expected_answer": "Kết quả rèn luyện năm học dự bị đại học phải xếp loại Tốt trở lên.",
+    "expected_context": "Điều kiện nộp hồ sơ (đáp ứng đủ 3 tiêu chí):\n...\n- Kết quả rèn luyện năm học dự bị đại học xếp loại Tốt trở lên."
+  },
+  {
+    "question": "Thí sinh đạt giải học sinh giỏi quốc gia được bảo lưu kết quả trong thời gian bao lâu để xét tuyển thẳng?",
+    "answer": "Thời gian đạt giải không được quá 03 năm tính tới thời điểm xét tuyển thẳng.",
+    "context": "Thí sinh đạt giải nhất, nhì, ba trong kỳ thi chọn học sinh giỏi quốc gia... Thời gian đạt giải không quá 03 năm tính tới thời điểm xét tuyển thẳng.",
+    "expected_answer": "Thời gian đạt giải không được quá 03 năm tính tới thời điểm xét tuyển thẳng.",
+    "expected_context": "Thí sinh đạt giải nhất, nhì, ba trong kỳ thi chọn học sinh giỏi quốc gia... Thời gian đạt giải không quá 03 năm tính tới thời điểm xét tuyển thẳng."
+  },
+  {
+    "question": "Bài thi HSA nào được chấp nhận để xét tuyển vào Trường ĐHGD năm 2026?",
+    "answer": "Trường chấp nhận bài thi HSA năm 2025 và HSA 2026 gồm 3 phần: Toán học và xử lý số liệu, Văn học - Ngôn ngữ, và Khoa học/Tiếng Anh.",
+    "context": "Bài thi HSA được Trường Đại học Giáo dục chấp nhận trong xét tuyển là bài thi HSA 2025, HSA 2026 gồm 3 phần: Phần 1: Toán học và xử lý số liệu (Tư duy định lượng); Phần 2: Văn học - Ngôn ngữ (Tư duy định tính); Phần 3: Khoa học/Tiếng Anh.",
+    "expected_answer": "Trường chấp nhận bài thi HSA năm 2025 và HSA 2026 gồm 3 phần: Toán học và xử lý số liệu, Văn học - Ngôn ngữ, và Khoa học/Tiếng Anh.",
+    "expected_context": "Bài thi HSA được Trường Đại học Giáo dục chấp nhận trong xét tuyển là bài thi HSA 2025, HSA 2026 gồm 3 phần: Phần 1: Toán học và xử lý số liệu (Tư duy định lượng); Phần 2: Văn học - Ngôn ngữ (Tư duy định tính); Phần 3: Khoa học/Tiếng Anh."
+  },
+  {
+    "question": "Quy chế tuyển sinh đại học tại ĐHQGHN năm 2026 thay thế cho các quyết định nào trước đó?",
+    "answer": "Thay thế cho Quy chế ban hành theo Quyết định số 1868/QĐ-ĐHQGHN ngày 18/4/2025 và Quyết định số 2319/QĐ-ĐHQGHN ngày 03/7/2023.",
+    "context": "Điều 2. Quyết định này có hiệu lực kể từ ngày ký và thay thế cho Quy chế tuyển sinh đại học chính quy tại ĐHQGHN ban hành theo Quyết định số 1868/QĐ-ĐHQGHN... và Quy chế tuyển sinh đại học vừa làm vừa học... Quyết định số 2319/QĐ-ĐHQGHN",
+    "expected_answer": "Thay thế cho Quy chế ban hành theo Quyết định số 1868/QĐ-ĐHQGHN ngày 18/4/2025 và Quyết định số 2319/QĐ-ĐHQGHN ngày 03/7/2023.",
+    "expected_context": "Điều 2. Quyết định này có hiệu lực kể từ ngày ký và thay thế cho Quy chế tuyển sinh đại học chính quy tại ĐHQGHN ban hành theo Quyết định số 1868/QĐ-ĐHQGHN... và Quy chế tuyển sinh đại học vừa làm vừa học... Quyết định số 2319/QĐ-ĐHQGHN"
+  },
+  {
+    "question": "Mã xét tuyển trong tuyển sinh do cơ quan nào quy định và có độ dài bao nhiêu?",
+    "answer": "Mã xét tuyển do đơn vị đào tạo tự quy ước, có độ dài tối đa không quá 09 ký tự bao gồm số và chữ.",
+    "context": "Mã xét tuyển do đơn vị đào tạo tự quy ước và tối đa không quá 09 ký tự bao gồm ký tự số và ký tự chữ.",
+    "expected_answer": "Mã xét tuyển do đơn vị đào tạo tự quy ước, có độ dài tối đa không quá 09 ký tự bao gồm số và chữ.",
+    "expected_context": "Mã xét tuyển do đơn vị đào tạo tự quy ước và tối đa không quá 09 ký tự bao gồm ký tự số và ký tự chữ."
+  },
+  {
+    "question": "Trong tổ hợp xét tuyển 3 môn không nhân hệ số, trọng số điểm xét tuyển của một môn là bao nhiêu?",
+    "answer": "Trọng số tính điểm xét của một môn bất kỳ trong tổ hợp 3 môn không nhân hệ số là 1/3.",
+    "context": "Tổ hợp có 03 môn (không nhân hệ số) thì trọng số tính điểm xét của 01 môn bất kỳ trong tổ hợp xét tuyển là 1/3.",
+    "expected_answer": "Trọng số tính điểm xét của một môn bất kỳ trong tổ hợp 3 môn không nhân hệ số là 1/3.",
+    "expected_context": "Tổ hợp có 03 môn (không nhân hệ số) thì trọng số tính điểm xét của 01 môn bất kỳ trong tổ hợp xét tuyển là 1/3."
+  },
+  {
+    "question": "Nguyên tắc làm tròn điểm trúng tuyển được quy định ra sao?",
+    "answer": "Điểm trúng tuyển được làm tròn toán học đến hàng phần trăm, sau khi đã cộng đầy đủ điểm ưu tiên và điểm cộng (nếu có).",
+    "context": "Việc làm tròn điểm được thực hiện theo nguyên tắc làm tròn toán học đến hàng phần trăm, sau khi cộng đầy đủ điểm ưu tiên và điểm cộng (nếu có).",
+    "expected_answer": "Điểm trúng tuyển được làm tròn toán học đến hàng phần trăm, sau khi đã cộng đầy đủ điểm ưu tiên và điểm cộng (nếu có).",
+    "expected_context": "Việc làm tròn điểm được thực hiện theo nguyên tắc làm tròn toán học đến hàng phần trăm, sau khi cộng đầy đủ điểm ưu tiên và điểm cộng (nếu có)."
+  },
+  {
+    "question": "Điểm thưởng tối đa cho thí sinh đủ điều kiện xét tuyển thẳng nhưng không sử dụng quyền này là bao nhiêu?",
+    "answer": "Thí sinh được cộng điểm thưởng tối đa là 3,00 điểm theo thang điểm 30.",
+    "context": "Điểm thưởng dành cho các đối tượng thí sinh được xét tuyển thẳng nhưng không sử dụng quyền xét tuyển thẳng... mức điểm thưởng tối đa 3,00 điểm theo thang điểm 30.",
+    "expected_answer": "Thí sinh được cộng điểm thưởng tối đa là 3,00 điểm theo thang điểm 30.",
+    "expected_context": "Điểm thưởng dành cho các đối tượng thí sinh được xét tuyển thẳng nhưng không sử dụng quyền xét tuyển thẳng... mức điểm thưởng tối đa 3,00 điểm theo thang điểm 30."
+  }
+]
